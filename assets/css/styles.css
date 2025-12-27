@@ -31,7 +31,7 @@ header{
 }
 
 main{
-    width: 1280px;
+    width: 100%;
     margin: 0 auto;   
     background-color: #1a1b26;
     padding: 20px 50px;

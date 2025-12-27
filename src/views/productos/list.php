@@ -4,44 +4,31 @@
 </div>
 <table>
     <thead>
-        <tr>
+        <tr>            
+            <th>Nombre</th>                            
+            <th>Descripcion</th>
+            <th>Precio</th>
             <th>Imagen</th>
-            <th>Nombre</th>
-            <th>Categoria</th>  
-            <th>Estado</th>                     
+            <th>Fecha Alta</th>
+            <th>Estado</th>
             <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td><img src="productos/pizza.jpg" alt="Pizza de Muzzarela"></td>
-            <td>Pizza de Muzzarela</td>
-            <td>Pizza</td>                       
-            <td>Activo</td>
+        <?php foreach($respuesta['productos'] as $p): ?>
+        <tr>                       
+            <td> <?= $p->getNombre() ?> </td>  
+            <td> <?= $p->getDescripcion() ?> </td>
+            <td> <?= $p->getPrecio() ?> </td>
+            <td> <img src="<?= $p->getImagen() ?>" alt="<?= $p->getNombre() ?>" width="50"> </td> 
+            <td> <?= $p->getFechaAlta() ?> </td>
+            <td> <?= $p->getEstado() ?> </td>                     
             <td>
-                <a href="/productos/1/edit">Editar</a>
-                <a href="">Eliminar</a>
+                <a href="/productos/<?= $p->getId() ?>/edit">Editar</a>
+                <a href="/productos/<?= $p->getId() ?>/delete">Eliminar</a>
             </td>
         </tr>
-        <tr>
-            <td><img src="productos/pizza.jpg" alt="Pizza de Muzzarela"></td>
-            <td>Pizza de Pepperoni</td>
-            <td>Pizza</td>                        
-            <td>Activo</td>
-            <td>
-                <a href="/productos/2/edit">Editar</a>
-                <a href="">Eliminar</a>
-            </td>
-        </tr>
-        <tr>
-            <td><img src="productos/pizza.jpg" alt="Pizza de Muzzarela"></td>
-            <td>Gaseosa cola</td>
-            <td>Bebida</td>                       
-            <td>Activo</td>
-            <td>
-                <a href="/productos/3/edit">Editar</a>
-                <a href="">Eliminar</a>
-            </td>
-        </tr>
+        <?php endforeach; ?>
+       
     </tbody>
 </table>     

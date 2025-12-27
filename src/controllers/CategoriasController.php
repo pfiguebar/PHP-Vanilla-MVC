@@ -8,7 +8,7 @@ class CategoriasControllers {
     
     public static function list(){
         $categoria = new CategoriasModels();
-        $listado = $categoria->all();
+        $listado = $categoria->all('ID AS id, NOMBRE AS categoria');
               
         return [
             'view' => 'categorias/list.php',
@@ -17,13 +17,15 @@ class CategoriasControllers {
     }
 
     public static function new(){
-
-        // caso sea un POST, estoy insertando
+        
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // llamar al insert en el modelo, etc.
+                        
+            $columns = "NOMBRE = :nombre";
+            $replace = [':nombre' => $_POST['nombre']]; 
+
             $categoria = new CategoriasModels();
-            $categoria->insert($_POST);
-            // redireccionar a la lista de categorías
+            $categoria->insert( $columns, $replace );
+            
             header('Location: /categorias');
             exit;
         }
@@ -41,14 +43,15 @@ class CategoriasControllers {
     public static function edit(){
         $id = $_GET['id'];
         $categoria = new CategoriasModels();
-        $actual = $categoria->find ($id); 
+        $datosactual = $categoria->find ( 'ID AS id, NOMBRE AS categoria', $id); 
         
-         // caso sea un POST, estoy insertando
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // llamar al update en el modelo, etc.
-            $categoria = new CategoriasModels();
-            $categoria->update($_POST, $id);
-            // redireccionar a la lista de categorías
+            
+            $columns = "NOMBRE = :nombre";
+            $replaces = [':nombre' => $_POST['nombre'], ':id' => $id];                        
+            
+            $categoria->update($columns, $replaces, $id);
+            
             header('Location: /categorias');
             exit;
         }
@@ -59,7 +62,7 @@ class CategoriasControllers {
                 'title' => 'Editar Categoria',
                 'button' => 'Guardar cambios',
                 'action' => '/categorias/'.$id.'/edit',
-                'values' => $actual              
+                'values' => $datosactual              
             ]
         ];
     }
@@ -67,7 +70,9 @@ class CategoriasControllers {
     public static function delete(){
         $id = $_GET['id'];
         $categoria = new CategoriasModels();
+
         $categoria->delete($id);
+        
         header('Location: /categorias');
         exit;
     }
