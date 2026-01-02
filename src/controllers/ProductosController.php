@@ -2,31 +2,22 @@
 
 namespace App\Controllers;
 
-use App\Models\ProductosModels;
+use App\Repositories\ProductosRepository;
 
 class ProductosControllers {
 
     public static function list(){
-        $producto = new ProductosModels();
-        $listado = $producto->all('ID AS id, NOMBRE AS nombre, DESCRIPCION AS descripcion, PRECIO AS precio, IMAGEN AS imagen, FECHA_ALTA AS fecha_alta, ESTADO AS estado');
-              
         return [
             'view' => 'productos/list.php',
-            'productos' => $listado
+            'productos' => ProductosRepository::all()
         ];
     }
 
 
-   public static function new(){
+   public static function new(){       
        
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            
-            $columns = "NOMBRE = :nombre";
-            $replace = [':nombre' => $_POST['nombre']]; 
-            
-            $producto = new ProductosModels();
-            $producto->insert($columns, $replace);
-           
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {            
+            ProductosRepository::set($_POST);
             header('Location: /productos');
             exit;
         }
@@ -36,7 +27,8 @@ class ProductosControllers {
             'form' => [
                 'title' => 'Nuevo Producto',
                 'button' => 'Crear',
-                'action' => '/productos/new'                
+                'action' => '/productos/new',
+                'vales' => ProductosRepository::new()              
             ]
         ];
     }
@@ -44,16 +36,9 @@ class ProductosControllers {
 
     public static function edit(){
         $id = $_GET['id'];
-        $producto = new ProductosModels();
-        $datosactual = $producto->find ('ID AS id, NOMBRE AS nombre, DESCRIPCION AS descripcion, PRECIO AS precio, IMAGEN AS imagen, FECHA_ALTA AS fecha_alta, ESTADO AS estado', $id); 
-                
+                        
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-            $columns = "NOMBRE = :nombre, DESCRIPCION = :descripcion, PRECIO = :precio, IMAGEN = :imagen, ESTADO = :estado";
-            $replaces = [':nombre' => $_POST['nombre'], ':descripcion' => $_POST['descripcion'], ':precio' => $_POST['precio'], ':imagen' => $_POST['imagen'], ':estado' => $_POST['estado'], ':id' => $id];            
-            
-            $producto->update($columns, $replaces, $id);
-            
+            ProductosRepository::set ( $_POST, $id );            
             header('Location: /productos');
             exit;
         }
@@ -64,17 +49,14 @@ class ProductosControllers {
                 'title' => 'Editar Producto',
                 'button' => 'Guardar cambios',
                 'action' => '/productos/'.$id.'/edit',
-                'values' => $datosactual              
+                'values' => ProductosRepository::find($id)             
             ]
         ];
     }
 
     public static function delete(){
         $id = $_GET['id'];
-        $producto = new ProductosModels();
-
-        $producto->delete($id);
-        
+        ProductosRepository::delete($id);       
         header('Location: /productos');
         exit;
     }

@@ -9,12 +9,13 @@ class ProductosModels extends EntityModel {
 
     protected PDO $pdo;
     protected $table = 'productos';
+    protected $alias = 'p';
 
-    private int $id;
-    private string $nombre;
-    private ?string $descripcion;
+    private ?int $id = null;
+    private string $nombre = '';
+    private string $descripcion;
     private float $precio;
-    private ?string $imagen;
+    private string $imagen;
     private string $fecha_alta;
     private int $estado;
 

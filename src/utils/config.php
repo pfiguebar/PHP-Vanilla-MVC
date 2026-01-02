@@ -3,6 +3,7 @@
 define ('APP', dirname(__DIR__)); 
 define ('CONTROLLERS', APP . '/controllers');
 define ('MODELS', APP . '/models');
+define ('REPOSITORIES', APP . '/repositories');
 define ('VIEWS', APP . '/views');
 
 define  ('DB_HOST', 'localhost');

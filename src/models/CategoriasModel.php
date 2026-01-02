@@ -9,9 +9,10 @@ class CategoriasModels extends EntityModel {
 
     protected PDO $pdo;
     protected $table = 'categorias';
+    protected $alias = 'c';    
 
-    private int $id;
-    private string $categoria;
+    private ?int $id = null;
+    private string $categoria = '';
     
     // ID
     public function getId(): int {

@@ -2,30 +2,21 @@
 
 namespace App\Controllers;
 
-use App\Models\CategoriasModels;
+use App\Repositories\CategoriasRepository;
 
 class CategoriasControllers {
     
     public static function list(){
-        $categoria = new CategoriasModels();
-        $listado = $categoria->all('ID AS id, NOMBRE AS categoria');
-              
         return [
             'view' => 'categorias/list.php',
-            'categorias' => $listado
+            'categorias' => CategoriasRepository::all()
         ];
     }
 
-    public static function new(){
+    public static function new(){       
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                        
-            $columns = "NOMBRE = :nombre";
-            $replace = [':nombre' => $_POST['nombre']]; 
-
-            $categoria = new CategoriasModels();
-            $categoria->insert( $columns, $replace );
-            
+            CategoriasRepository::set ( $_POST );
             header('Location: /categorias');
             exit;
         }
@@ -35,23 +26,17 @@ class CategoriasControllers {
             'form' => [
                 'title' => 'Nueva Categoria',
                 'button' => 'Crear',
-                'action' => '/categorias/new'                
+                'action' => '/categorias/new',
+                'values' => CategoriasRepository::new()               
             ]
         ];
     }
 
     public static function edit(){
-        $id = $_GET['id'];
-        $categoria = new CategoriasModels();
-        $datosactual = $categoria->find ( 'ID AS id, NOMBRE AS categoria', $id); 
+        $id = $_GET['id'];                    
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            
-            $columns = "NOMBRE = :nombre";
-            $replaces = [':nombre' => $_POST['nombre'], ':id' => $id];                        
-            
-            $categoria->update($columns, $replaces, $id);
-            
+            CategoriasRepository::set ( $_POST, $id );           
             header('Location: /categorias');
             exit;
         }
@@ -62,17 +47,14 @@ class CategoriasControllers {
                 'title' => 'Editar Categoria',
                 'button' => 'Guardar cambios',
                 'action' => '/categorias/'.$id.'/edit',
-                'values' => $datosactual              
+                'values' => CategoriasRepository::find($id)              
             ]
         ];
     }
 
     public static function delete(){
         $id = $_GET['id'];
-        $categoria = new CategoriasModels();
-
-        $categoria->delete($id);
-        
+        CategoriasRepository::delete($id);
         header('Location: /categorias');
         exit;
     }

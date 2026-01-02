@@ -35,8 +35,8 @@
     <div>
         <label for="estado">Estado:</label>
         <select name="estado" id="estado">
-            <option selected value="activo">Activo</option>
-            <option value="inactivo">Inactivo</option>
+            <option selected value="1">Activo</option>
+            <option value="0">Inactivo</option>
         </select>
     </div>
     
