@@ -9,8 +9,8 @@ class ProductosRepository {
     public static function all() {        
         $producto = new ProductosModels();
         $listado = $producto->select(
-            'ID AS id, NOMBRE AS nombre, DESCRIPCION AS descripcion, PRECIO AS precio, IMAGEN AS imagen, FECHA_ALTA AS fecha_alta, ESTADO AS estado',
-            ['ORDER' => 'NOMBRE ASC']
+            'ID AS id, PRODUCTO AS producto, DESCRIPCION AS descripcion, PRECIO AS precio, IMAGEN AS imagen, FECHA_ALTA AS fecha_alta, ESTADO AS estado',
+            ['ORDER' => 'PRODUCTO ASC']
         );
         return $listado;
     }
@@ -18,7 +18,7 @@ class ProductosRepository {
     public static function find($id) {        
         $producto = new ProductosModels();
         $listado = $producto->select(
-            'ID AS id, NOMBRE AS nombre, DESCRIPCION AS descripcion, PRECIO AS precio, IMAGEN AS imagen, FECHA_ALTA AS fecha_alta, ESTADO AS estado',
+            'ID AS id, PRODUCTO AS producto, DESCRIPCION AS descripcion, PRECIO AS precio, IMAGEN AS imagen, FECHA_ALTA AS fecha_alta, ESTADO AS estado',
             [
                 'where' => 'ID = :id',
                 'replaces' => [':id' => $id],
@@ -33,23 +33,18 @@ class ProductosRepository {
         return $producto;
     }
 
-    public static function set($data, $id = null) {
-        $producto = new ProductosModels();        
-        $columns = "NOMBRE = :nombre, DESCRIPCION = :descripcion, PRECIO = :precio, IMAGEN = :imagen, FECHA_ALTA = :fecha_alta, ESTADO = :estado";
-        $replaces = [
-            ':nombre' => $data['nombre'],
-            ':descripcion' => $data['descripcion'],
-            ':precio' => $data['precio'],
-            ':imagen' => '/assets/img/pizza/margarita.jpg', //$data['imagen'],
-            ':fecha_alta' => '2024-01-15 12:30:00', //$data['fecha_alta'],
-            ':estado' => 1 //$data['estado']
-        ];
-        is_null($id) ? $producto->insert($columns, $replaces) : $producto->update($columns, $replaces, $id);
+    public static function set( $producto, $data) {
+        $producto->setProducto( $data['producto'] );
+        $producto->setDescripcion( $data['descripcion'] );
+        $producto->setPrecio( $data['precio'] );
+        $producto->setImagen( $data['imagen'] );
+        $producto->setFechaAlta( $data['fecha_alta'] );
+        $producto->setEstado( $data['estado'] );    
+        is_null( $producto->getId()) ? $producto->insert() : $producto->update();
     }
 
-    public static function delete($id) {
-        $producto = new ProductosModels();
-        $producto->delete($id);
+    public static function delete($producto) {
+        $producto->delete();
     }
     
 

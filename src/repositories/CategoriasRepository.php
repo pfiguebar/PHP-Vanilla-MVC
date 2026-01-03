@@ -9,8 +9,8 @@ class CategoriasRepository {
     public static function all() {        
         $categoria = new CategoriasModels();
         $listado = $categoria->select(
-            'ID AS id, NOMBRE AS categoria',
-            ['ORDER' => 'NOMBRE ASC']
+            'ID AS id, CATEGORIA AS categoria',
+            ['ORDER' => 'CATEGORIA ASC']
         );
         return $listado;
     }
@@ -18,13 +18,13 @@ class CategoriasRepository {
     public static function find($id) {        
         $categoria = new CategoriasModels();
         $listado = $categoria->select(
-            'ID AS id, NOMBRE AS categoria', 
+            'ID AS id, CATEGORIA AS categoria', 
             [
                 'where' => 'ID = :id',
                 'replaces' => [':id' => $id],
             ],
             true
-        );
+        );      
         return $listado;
     }
 
@@ -33,16 +33,13 @@ class CategoriasRepository {
         return $categoria;
     }
 
-    public static function set($data, $id = null) {
-        $categoria = new CategoriasModels();        
-        $columns = "NOMBRE = :nombre";
-        $replaces = [':nombre' => $data['nombre']];        
-        is_null($id) ? $categoria->insert($columns, $replaces) : $categoria->update($columns, $replaces, $id);
+    public static function set($categoria, $data ) {
+        $categoria->setCategoria( $data['categoria'] ); 
+        is_null($categoria->getId()) ? $categoria->insert() : $categoria->update();
     }   
 
-    public static function delete($id) {
-        $categoria = new CategoriasModels();
-        $categoria->delete($id);
+    public static function delete($categoria) {
+       $categoria->delete();
     }
 
     

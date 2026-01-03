@@ -3,20 +3,27 @@
 namespace App\Models;
 
 use PDO;
+use ReflectionClass;
 
 // propiedades y métodos comunes para todas las entidades
 class EntityModel {
     
     protected PDO $pdo;
-    protected $table = 'tbl';
-    protected $alias = 't';
+    protected string $table = "tbl";
+    protected string $alias = "t";
 
-    private $query = '';
-    private $replaces = [];
+    private string $query = "";
+    private array $replaces = [];
+       
 
     public function connect(){
-        $server = 'mysql:host='.DB_HOST.';dbname='.DB_NAME.';charset='.DB_CHARSET;        
-        $this->pdo = new PDO($server, DB_USER, DB_PASS);
+        try {
+            $server = 'mysql:host='.DB_HOST.';dbname='.DB_NAME.';charset='.DB_CHARSET;        
+            $this->pdo = new PDO($server, DB_USER, DB_PASS);
+        } catch (PDOException $e) {
+            error_log("Database connection failed: " . $e->getMessage());
+            throw new \Exception("Database connection failed");
+        }
     }
 
 
@@ -81,28 +88,28 @@ class EntityModel {
             $this->query .= " LIMIT {$filters['limit']}";
         }
         
-        $this->replaces = $filters['replaces'] ?? null;
+        $this->replaces = $filters['replaces'] ?? [];
         return $this->execute( true, $onlyOne );        
         
     }
     
 
-    public function insert( $columns, $replaces){       
-        $this->query = "INSERT INTO $this->table SET $columns";
-        $this->replaces = $replaces;
+    public function insert(){ 
+        $columns = $this->getAttributes();   
+        $this->query = "INSERT INTO $this->table SET $columns";  
         $this->execute();
     }
 
-    public function update($columns, $replaces, int $id){       
-        $this->query = "UPDATE $this->table SET $columns WHERE ID = :id"; 
-        $this->replaces = $replaces;
-        $this->replaces[':id'] = $id;     
+    public function update(){       
+        $columns = $this->getAttributes();
+        $this->query = "UPDATE $this->table SET $columns WHERE ID = :id";         
+        $this->replaces[':id'] = $this->getId();     
         $this->execute();
     }
 
-    public function delete(int $id){          
+    public function delete(){          
         $this->query = "DELETE FROM $this->table WHERE ID = :id";        
-        $this->replaces = [':id' => $id];
+        $this->replaces = [':id' => $this->getId()];
         $this->execute();
     }  
     
@@ -115,6 +122,40 @@ class EntityModel {
             $stmt->setFetchMode(PDO::FETCH_CLASS, get_class($this));
             return $onlyOne ? $stmt->fetch() : $stmt->fetchAll();
         }
+    }
+
+    private function getAttributes(){
+        $reflection = new ReflectionClass($this);
+        $atributos = $reflection->getProperties();
+
+        $attrs = array_filter($atributos, function ($atributo) {
+            $nombre = $atributo->getName();
+            $metodo_verificar = 'set' . ucfirst($nombre);
+
+            $clase_original = $atributo->getDeclaringClass()->getName();
+            $clase_actual = get_class($this);
+
+            $es_protected = $atributo->isProtected();
+           
+
+            return (
+                $clase_original == $clase_actual && 
+                ! $es_protected &&
+                method_exists($this, $metodo_verificar)
+                );
+        });
+        
+        $query_array = [];
+
+        foreach ($attrs as $atributo) {
+            $nombre = $atributo->getName();
+            $metodo = 'get' . ucfirst($nombre);
+            $token = ":" . $nombre;
+            $this->replaces[$token] = $this->$metodo();
+            $query_array[] = "$nombre = $token";  
+        }
+
+        return implode(", ", $query_array);    
     }
     
 }   

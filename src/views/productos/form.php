@@ -4,8 +4,8 @@
 <form method="post" action="<?= $respuesta['form']['action']; ?>" enctype="multipart/form-data">
        
     <div>
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" name="nombre" placeholder="Nombre del producto" autocomplete="off" value="<?= isset($respuesta['form']['values']) ? $respuesta['form']['values']->getNombre() : ''; ?>">
+        <label for="producto">Producto:</label>
+        <input type="text" id="producto" name="producto" placeholder="Nombre del producto" autocomplete="off" value="<?= isset($respuesta['form']['values']) ? $respuesta['form']['values']->getProducto() : ''; ?>">
     </div>
     
     <div>

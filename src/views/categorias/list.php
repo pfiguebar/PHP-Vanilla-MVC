@@ -2,10 +2,17 @@
     <h2>Listado Categorias</h2>
     <a href="/categorias/new">Agregar Categoria</a>
 </div>
+
+<?php if (isset($_GET['error']) && $_GET['error'] === 'no-encontrado'): ?>
+    <div class="error">
+        Categoria no encontrada.
+    </div>
+<?php endif; ?>
+
 <table>
     <thead>
         <tr>                        
-            <th>Nombre</th>                                        
+            <th>Categoria</th>                                        
             <th>Acciones</th>
         </tr>
     </thead>

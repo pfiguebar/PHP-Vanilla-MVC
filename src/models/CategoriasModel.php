@@ -2,25 +2,20 @@
 
 namespace App\Models;
 
-use PDO;
 use App\Models\EntityModel;
 
 class CategoriasModels extends EntityModel {
 
-    protected PDO $pdo;
-    protected $table = 'categorias';
-    protected $alias = 'c';    
+    protected string $table = "categorias";
+    protected string $alias = "c";    
 
     private ?int $id = null;
-    private string $categoria = '';
+    private string $categoria = "";
     
     // ID
-    public function getId(): int {
+    public function getId(): ?int {
         return $this->id;
-    }
-    public function setId(int $id): void {
-        $this->id = $id;
-    }
+    }    
 
     // CATEGORIA
     public function getCategoria(): string {

@@ -3,8 +3,8 @@
 </div>
 <form method="post" action="<?= $respuesta['form']['action']; ?>">               
     <div>
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" name="nombre" placeholder="Nombre del producto" autocomplete="off" value="<?= isset($respuesta['form']['values']) ? $respuesta['form']['values']->getCategoria() : ''; ?>">
+        <label for="categoria">Categoria:</label>
+        <input type="text" id="categoria" name="categoria" placeholder="Nombre de categoria" autocomplete="off" value="<?= isset($respuesta['form']['values']) ? $respuesta['form']['values']->getCategoria() : ''; ?>">
     </div>                
     <div class="buttons">
         <button type="submit"> <?= $respuesta['form']['button']; ?> </button>

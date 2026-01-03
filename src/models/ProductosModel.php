@@ -2,17 +2,16 @@
 
 namespace App\Models;
 
-use PDO;
+
 use App\Models\EntityModel;
 
 class ProductosModels extends EntityModel {
 
-    protected PDO $pdo;
-    protected $table = 'productos';
-    protected $alias = 'p';
+    protected string $table = "productos";
+    protected string $alias = "p";
 
     private ?int $id = null;
-    private string $nombre = '';
+    private string $producto = "";
     private string $descripcion;
     private float $precio;
     private string $imagen;
@@ -20,23 +19,20 @@ class ProductosModels extends EntityModel {
     private int $estado;
 
     // ID
-    public function getId(): int {
+    public function getId(): ?int {
         return $this->id;
     }
-    public function setId(int $id): void {
-        $this->id = $id;
+     
+    // PRODUCTO
+    public function getProducto(): string {
+        return $this->producto;
     }
-
-    // NOMBRE
-    public function getNombre(): string {
-        return $this->nombre;
-    }
-    public function setNombre(string $nombre): void {
-        $this->nombre = $nombre;
+    public function setProducto(string $producto): void {
+        $this->producto = $producto;
     }
 
     // DESCRIPCION
-    public function getDescripcion(): ?string {
+    public function getDescripcion(): string {
         return $this->descripcion;
     }
     public function setDescripcion(?string $descripcion): void {

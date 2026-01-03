@@ -7,36 +7,45 @@ use App\Repositories\CategoriasRepository;
 class CategoriasControllers {
     
     public static function list(){
+        
+        $categorias = CategoriasRepository::all();
+
         return [
             'view' => 'categorias/list.php',
-            'categorias' => CategoriasRepository::all()
+            'categorias' => $categorias
         ];
     }
 
-    public static function new(){       
-        
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            CategoriasRepository::set ( $_POST );
+    public static function new(){   
+
+        $categoria = CategoriasRepository::new();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {            
+            CategoriasRepository::set ($categoria, $_POST );
             header('Location: /categorias');
             exit;
         }
-
         return [
             'view' => 'categorias/form.php',
             'form' => [
                 'title' => 'Nueva Categoria',
                 'button' => 'Crear',
                 'action' => '/categorias/new',
-                'values' => CategoriasRepository::new()               
+                'values' => $categoria               
             ]
         ];
     }
 
     public static function edit(){
         $id = $_GET['id'];                    
-        
+        $categoria = CategoriasRepository::find($id);
+
+        if (!$categoria) {
+            header('Location: /categorias?error=no-encontrado');
+            exit;
+        }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            CategoriasRepository::set ( $_POST, $id );           
+            CategoriasRepository::set ( $categoria, $_POST, $id );           
             header('Location: /categorias');
             exit;
         }
@@ -47,14 +56,22 @@ class CategoriasControllers {
                 'title' => 'Editar Categoria',
                 'button' => 'Guardar cambios',
                 'action' => '/categorias/'.$id.'/edit',
-                'values' => CategoriasRepository::find($id)              
-            ]
+                'values' => $categoria              
+            ]   
+            
         ];
     }
 
     public static function delete(){
         $id = $_GET['id'];
-        CategoriasRepository::delete($id);
+        $categoria = CategoriasRepository::find($id);
+
+        if (!$categoria) {
+            header('Location: /categorias?error=no-encontrado');
+            exit;
+        }
+
+        CategoriasRepository::delete($categoria);
         header('Location: /categorias');
         exit;
     }
